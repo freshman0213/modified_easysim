@@ -58,11 +58,13 @@ class Body:
         vhacd_params=None,
         mesh_normal_mode=None,
         env_ids_load=None,
+        base_mass=None,
         initial_base_position=None,
         initial_base_velocity=None,
         initial_dof_position=None,
         initial_dof_velocity=None,
         scale=None,
+        link_masses=None,
         link_collision_filter=None,
         link_lateral_friction=None,
         link_spinning_friction=None,
@@ -101,6 +103,7 @@ class Body:
         self.vhacd_params = vhacd_params
         self.mesh_normal_mode = mesh_normal_mode
         self.env_ids_load = env_ids_load
+        self.base_mass = base_mass
         self.initial_base_position = initial_base_position
         self.initial_base_velocity = initial_base_velocity
         self.initial_dof_position = initial_dof_position
@@ -108,6 +111,7 @@ class Body:
 
         self.scale = scale
 
+        self.link_masses = link_masses
         self.link_collision_filter = link_collision_filter
         self.link_lateral_friction = link_lateral_friction
         self.link_spinning_friction = link_spinning_friction
@@ -337,6 +341,16 @@ class Body:
         self._env_ids_load = value
 
     @property
+    def base_mass(self):
+        """ """
+        return self._base_mass
+
+    @base_mass.setter
+    def base_mass(self, value):
+        """ """
+        self._base_mass = value
+    
+    @property
     def initial_base_position(self):
         """ """
         return self._initial_base_position
@@ -447,6 +461,16 @@ class Body:
                 )
         self._scale = value
 
+    @property
+    def link_masses(self):
+        """ """
+        return self._link_masses
+
+    @link_masses.setter
+    def link_masses(self, value):
+        """ """
+        self._link_masses = value
+        
     @property
     def link_collision_filter(self):
         """ """

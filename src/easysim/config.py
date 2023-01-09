@@ -49,7 +49,8 @@ _C.SIM.GROUND_PLANE = CN()
 
 _C.SIM.GROUND_PLANE.LOAD = True
 
-_C.SIM.GROUND_PLANE.DISTANCE = 0.0
+# Notes: Follow the PandaPickAndPlace-V3 of panda-gym 
+_C.SIM.GROUND_PLANE.DISTANCE = 0.4
 
 # ---------------------------------------------------------------------------- #
 # Bullet config

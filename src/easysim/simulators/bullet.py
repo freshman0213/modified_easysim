@@ -166,7 +166,7 @@ class Bullet(Simulator):
                 f"For Bullet, 'geometry_type' only supports URDF, SPHERE, and BOX: '{body.name}'"
             )
         if body.geometry_type == GeometryType.URDF:
-            for attr in ("sphere_radius", "box_half_extent"):
+            for attr in ("sphere_radius", "box_half_extent", "base_mass", "link_masses"):
                 if getattr(body, attr) is not None:
                     raise ValueError(f"'{attr}' must be None for geometry type URDF: '{body.name}'")
             if body.use_fixed_base is not None:
@@ -191,7 +191,7 @@ class Bullet(Simulator):
             kwargs_visual = {}
             kwargs_collision = {}
             if body.geometry_type == GeometryType.SPHERE:
-                for attr in ("urdf_file", "box_half_extent"):
+                for attr in ("urdf_file", "box_half_extent", "use_fixed_base"):
                     if getattr(body, attr) is not None:
                         raise ValueError(
                             f"'{attr}' must be None for geometry type SPHERE: '{body.name}'"
@@ -206,7 +206,7 @@ class Bullet(Simulator):
                     pybullet.GEOM_SPHERE, **kwargs_collision
                 )
             if body.geometry_type == GeometryType.BOX:
-                for attr in ("urdf_file", "sphere_radius"):
+                for attr in ("urdf_file", "sphere_radius", "use_fixed_base"):
                     if getattr(body, attr) is not None:
                         raise ValueError(
                             f"'{attr}' must be None for geometry type BOX: '{body.name}'"
@@ -220,8 +220,10 @@ class Bullet(Simulator):
                 kwargs["baseCollisionShapeIndex"] = self._p.createCollisionShape(
                     pybullet.GEOM_BOX, **kwargs_collision
                 )
-            if body.use_fixed_base is not None and body.use_fixed_base:
-                kwargs["baseMass"] = 0.0
+            if body.base_mass is not None:
+                kwargs["baseMass"] = body.base_mass
+            if body.link_masses is not None:
+                kwargs["linkMasses"] = body.linkMasses
             self._body_ids[body.name] = self._p.createMultiBody(**kwargs)
 
         dof_indices = []
@@ -681,6 +683,7 @@ class Bullet(Simulator):
         self._check_and_update_camera(camera)
         if self._image_cache[camera.name]["color"] is None:
             self._render(camera)
+        # Notes: Use None is equivalent to adding a new axis to self._image_cache[camera.name]['color']
         camera.color = self._image_cache[camera.name]["color"][None]
 
     def _render_depth(self, camera):
