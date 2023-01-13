@@ -733,8 +733,8 @@ class Bullet(Simulator):
     def _render(self, camera):
         """ """
         (
-            _,
-            _,
+            width,
+            height,
             self._image_cache[camera.name]["color"],
             self._image_cache[camera.name]["depth"],
             self._image_cache[camera.name]["segmentation"],
@@ -745,6 +745,11 @@ class Bullet(Simulator):
             projectionMatrix=self._projection_matrix[camera.name],
             renderer=pybullet.ER_BULLET_HARDWARE_OPENGL,
         )
+
+        if not pybullet.isNumpyEnabled():
+            self._image_cache[camera.name]["color"] = np.array(self._image_cache[camera.name]["color"]).reshape((height, width, 4))
+            self._image_cache[camera.name]["depth"] = np.array(self._image_cache[camera.name]["depth"]).reshape((height, width))
+            self._image_cache[camera.name]["segmentation"] = np.array(self._image_cache[camera.name]["segmentation"]).reshape((height, width))
 
     def _set_callback_scene(self):
         """ """
